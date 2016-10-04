@@ -34,19 +34,19 @@ public class Block<T> {
 
 	// Returns capacity
 	public int getCapacity() {
-		return this.capacity;
+		return capacity;
 	}
 
 	// Returns size
 	public int size() {
-		return this.size;
+		return size;
 	}
 
 	// Increases size field of the Block to allow additional elements to be
 	// added.
 	// Does not change the actual size of the array held by the Block
 	public void grow() {
-		this.size += 1;
+		size += 1;
 	}
 
 	// Set the last element to null and decrease the space allocated

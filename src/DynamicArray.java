@@ -66,14 +66,14 @@ class DynamicArray<T> {
 	// index > size -1;
 	// Target complexity: O(1)
 	public T get(int i) {
-		if (i < 0 || i > size - 1) {
+		if (i < 0 || i > size() - 1) {
 			// avoids out of bounds and nullpointers
 			IllegalArgumentException e = new IllegalArgumentException();
 			throw e;
 		}
 		Location location = locate(i);// use our locate to find where index is
-		Block<T> block = getBlock(location.blockIndex);// extract block by index
-		return (T) block.arrayOfElements[location.elementIndex];// return by
+		Block<T> block = getBlock(location.getBlockIndex());// extract block by index
+		return (T) block.arrayOfElements[location.getElementIndex()];// return by
 																// elmIndex
 
 	}
@@ -83,14 +83,14 @@ class DynamicArray<T> {
 	// index > size -1;
 	// Target complexity: O(1)
 	public void set(int index, T x) {
-		if (index < 0 || index > size - 1) {
+		if (index < 0 || index > size() - 1) {
 			// avoids out of bounds and nullpointers
 			IllegalArgumentException e = new IllegalArgumentException();
 			throw e;
 		}
 		Location location = locate(index);// locate block and index of location
-		Block<T> block = getBlock(location.blockIndex);// extract ref to block
-		block.arrayOfElements[location.elementIndex] = x;// set it
+		Block<T> block = getBlock(location.getBlockIndex());// extract ref to block
+		block.arrayOfElements[location.getElementIndex()] = x;// set it
 
 	}
 
@@ -113,14 +113,14 @@ class DynamicArray<T> {
 
 		// First lets check if the array itself is full AND if the last block is
 		// full
-		if (indexOfLastDataBlock == arrayOfBlocks.length - 1 && refLastBlock.size == refLastBlock.capacity) {
+		if (indexOfLastDataBlock == arrayOfBlocks.length - 1 && refLastBlock.size() == refLastBlock.getCapacity()) {
 			// If it is, we will double the size of the array
 			expandArray();
 		}
 
 		// Now we're sure that the array has enough space for more blocks, we
 		// can go ahead and check to see if the last block is full
-		if (refLastBlock.size == refLastBlock.capacity) {
+		if (refLastBlock.size() == refLastBlock.getCapacity()) {
 			// We may need to create a new superBlock, so lets extract some data
 			// from the last superBlock
 
@@ -206,14 +206,14 @@ class DynamicArray<T> {
 
 			// If the block originally has a size of zero, we need to do some
 			// extra bookkeeping
-			if (refLastBlock.size == 0) {
+			if (refLastBlock.size() == 0) {
 				// After this grow...
 				numberOfEmptyDataBlocks--;// ...block will no longer be empty
 				numberOfNonEmptyDataBlocks++;// ...and will become 'non empty'
 			}
 			refLastBlock.grow();// Grow the block
 			// index of last nonEmpty block need to be set
-			indexOfLastNonEmptyDataBlock = refLastBlock.number;
+			indexOfLastNonEmptyDataBlock = refLastBlock.getNumber();
 		}
 
 	}
@@ -251,7 +251,7 @@ class DynamicArray<T> {
 		Block<T> refLastBlock = getBlock(extractedBlock);
 		refLastBlock.shrink();// shrink the block
 		size--;// array has one less elem
-		if (refLastBlock.size == 0) {
+		if (refLastBlock.size() == 0) {
 			// if Block is now empty, some book keeping
 			numberOfEmptyDataBlocks++;// one new empty block
 			numberOfNonEmptyDataBlocks--;// one less non empty block
@@ -267,12 +267,12 @@ class DynamicArray<T> {
 			numberOfEmptyDataBlocks--;// one empty block gone
 			numberOfDataBlocks--;// number of block has gone down too
 			// --Bookkeeping-super
-			lastSuperBlock.currentNumberOfDataBlocks--;// need to let super know
+			lastSuperBlock.decrementCurrentNumberOfDataBlocks();// need to let super know
 														// it lost a block
 		}
 
 		// determining if superblock needs to change
-		if (lastSuperBlock.currentNumberOfDataBlocks == 0) {
+		if (lastSuperBlock.getCurrentNumberOfDataBlocks() == 0) {
 			// superblock now has nothing to be super for :(
 
 			// getting relevent current superblock info
@@ -385,10 +385,10 @@ class DynamicArray<T> {
 	public String toString() {
 		// building string starting wth bracket
 		StringBuilder returnStr = new StringBuilder("[");
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size(); i++) {
 			// for all elements...
 			returnStr.append(get(i));// get the elm and append
-			if (i != size - 1) {
+			if (i != size() - 1) {
 				// if this isnt the last elem, append a comma
 				returnStr.append(",");
 			}
@@ -422,9 +422,9 @@ class DynamicArray<T> {
 
 		// Printing the elements in the array WITHOUT brackets or commas
 		returnStr.append("DynamicArray: ");
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size(); i++) {
 			returnStr.append(get(i));
-			if (i != size - 1) {
+			if (i != size() - 1) {
 				returnStr.append(" ");// dont add last space cause OCD
 			}
 		}
